@@ -1,16 +1,22 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"net/http"
 
-func setupRouter() *gin.Engine {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(200, "pong")
+	"goji.io"
+	"goji.io/pat"
+)
+
+func setupRouter() *goji.Mux {
+	mux := goji.NewMux()
+	mux.HandleFunc(pat.Get("/ping"), func(rw http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(rw, "pong")
 	})
-	return r
+	return mux
 }
 
 func main() {
-	r := setupRouter()
-	r.Run(":8080")
+	mux := setupRouter()
+	http.ListenAndServe(":8080", mux)
 }
