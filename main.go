@@ -1,22 +1,40 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-
-	"goji.io"
-	"goji.io/pat"
+	"github.com/gin-gonic/gin"
+	docs "github.com/medymik/matcha/docs"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
-func setupRouter() *goji.Mux {
-	mux := goji.NewMux()
-	mux.HandleFunc(pat.Get("/ping"), func(rw http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(rw, "pong")
-	})
-	return mux
+// @BasePath /api/v1
+// @Summary ping health
+// @Schemes
+// @Description do ping
+// @Tags Health
+// @Accept json
+// @Produce json
+// @Success 200 {string} pong
+// @Router /health/ping [get]
+func HealthPing(ctx *gin.Context) {
+	ctx.String(200, "pong")
+}
+
+func setupRouter() *gin.Engine {
+	r := gin.Default()
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	v1 := r.Group("/api/v1")
+	{
+		eg := v1.Group("/health")
+		{
+			eg.GET("/ping", HealthPing)
+		}
+	}
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	return r
 }
 
 func main() {
-	mux := setupRouter()
-	http.ListenAndServe(":8080", mux)
+	r := setupRouter()
+	r.Run(":8080")
 }
