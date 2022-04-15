@@ -3,9 +3,12 @@ DROP TABLE positions;
 DROP TABLE messages;
 DROP TABLE users;
 
--- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- CREATE TYPE relation_type AS ENUM ('pending', 'accepted', 'blocked');
+DROP TYPE IF EXISTS relation_type;
+CREATE TYPE relation_type AS ENUM ('pending', 'accepted', 'blocked');
+DROP TYPE IF EXISTS gender;
+CREATE TYPE gender AS ENUM ('male', 'female');
 
 CREATE TABLE IF NOT EXISTS users (
     id uuid default uuid_generate_v4(),
@@ -15,7 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR NOT NULL,
     password VARCHAR NOT NULL,
     PRIMARY KEY (id),
-    created_at TIMESTAMP DEFAULT NOW()
+    created_at TIMESTAMP DEFAULT NOW(),
+    sexe gender DEFAULT 'male'
 );
 
 CREATE TABLE relationships (
