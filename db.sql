@@ -3,9 +3,10 @@ DROP TABLE positions;
 DROP TABLE messages;
 DROP TABLE users;
 
--- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- CREATE TYPE relation_type AS ENUM ('pending', 'accepted', 'blocked');
+DROP TYPE IF EXISTS relation_type;
+CREATE TYPE relation_type AS ENUM ('pending', 'accepted', 'blocked');
 
 CREATE TABLE IF NOT EXISTS users (
     id uuid default uuid_generate_v4(),
